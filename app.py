@@ -7,7 +7,7 @@ from keybert import KeyBERT
 import spacy
 import concurrent.futures
 import logging
-import certifi  # Import certifi
+import certifi  
 
 # Setup logging for error handling
 logging.basicConfig(
