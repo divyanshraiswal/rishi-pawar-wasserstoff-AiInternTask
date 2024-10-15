@@ -24,6 +24,30 @@ This project is designed to automate the download, text extraction, summarizatio
    cd pdf-processing-app
    
 2. **Build the Docker image**:
-  ```bash
-  docker build -t pdf-processing-app
+   ```bash
+   docker build -t pdf-processing-app
 
+3. **Run the Docker container**
+   ```bash
+   docker run -e MONGO_URI="mongodb://host:port" \
+           -e DB_NAME="l_pdf_data" \
+           -e COLLECTION_NAME="l_pdf_metadata" \
+           -p 27017:27017 pdf-processing-app
+
+
+
+## Overview of `app.py`
+
+The `app.py` file is responsible for downloading PDFs, extracting text, summarizing content, extracting keywords, and storing metadata in MongoDB. Here’s a breakdown of the key components:
+
+| **Component**             | **Description**                                                                                               |
+|---------------------------|---------------------------------------------------------------------------------------------------------------|
+| **Imports**               | Uses `requests` for downloading PDFs, `pdfplumber` for text extraction, `pymongo` for MongoDB interactions, `KeyBERT` for keyword extraction, and `spacy` for entity recognition. |
+| **Model Initialization**  | Initializes `spacy` for NLP tasks and `KeyBERT` for keyword extraction.                                        |
+| **MongoDB Connection**    | Connects to a MongoDB database using a URI and returns the specified collection for storing metadata.          |
+| **Download and Extract Text** | Downloads PDFs and extracts text using `pdfplumber`. Handles errors with logging.                              |
+| **Keyword Extraction**    | Extracts top keywords using `KeyBERT` and identifies domain-specific entities using `spacy`.                   |
+| **Update MongoDB**        | Updates the MongoDB collection with extracted metadata, including the document name, URL, summary, keywords, and status. |
+| **Process Single PDF**    | Downloads, extracts text, summarizes, and stores metadata for a single PDF.                                    |
+| **Concurrent Processing** | Uses `ThreadPoolExecutor` to process multiple PDFs concurrently, improving efficiency.                         |
+| **Execution**             | Runs the processing function with user-specified MongoDB details and a JSON URL of PDF links.                  |
